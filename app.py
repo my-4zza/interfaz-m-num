@@ -1,13 +1,3 @@
-"""Para ejecutar el programa local (en código) necesitamos instalar las librerías:
-        pip install streamlit sympy
-Y ejecutar el comando:
-        py -m streamlit run app.py
-o si no funciona escribir python completo (a veces presenta fallas al ejecutar usando uno u otro comando):
-        python -m streamlit run app.py
-Podemos seleccionar el localhost o dirección ip que se presenta estando en la misma red. Se abrirá en una ventana de navegador.
-Caso contrario, en el archivo README.md se encuentra el enlace al sitio web con la calculadora.
-"""
-
 import base64
 import streamlit as st
 import sympy as sp
@@ -18,7 +8,7 @@ import time
 from sympy.parsing.sympy_parser import parse_expr, standard_transformations, implicit_multiplication_application, convert_xor
 
 # ==========================================
-# CONFIGURACIÓN DE PÁGINA
+# CONFIGURACIÓN DE PÁGINA (Debe ser la primera instrucción)
 # ==========================================
 st.set_page_config(page_title="Itera Studio", layout="wide")
 
@@ -44,7 +34,7 @@ def agregar_fondo_local(ruta_imagen):
     )
 
 # Llama a la función con el nombre exacto de tu archivo de imagen
-agregar_fondo_local("wallpaper.jpeg")
+agregar_fondo_local("mikurescaled.jpeg")
 
 # ==========================================
 # GESTIÓN DE ACCIONES Y PARÁMETROS DE URL
@@ -1129,6 +1119,16 @@ with tab_derivacion:
                     c2.metric("Hacia Atrás", f"{df_atras:.5f}", f"Error: {err_atras:.5f}", delta_color="off")
                     c3.metric("Centrada", f"{df_centrada:.5f}", f"Error: {err_centrada:.5f}", delta_color="off")
                     
+                    st.markdown("#### Puntos Evaluados")
+                    tabla_df = pd.DataFrame({
+                        "Punto": ["x_i - h (Atrás)", "x_i (Centro)", "x_i + h (Adelante)"],
+                        "Valor x": [f"{xi - h:.5f}", f"{xi:.5f}", f"{xi + h:.5f}"],
+                        "f(x)": [f"{f_xi_menos_h:.5f}", f"{f_xi:.5f}", f"{f_xi_mas_h:.5f}"]
+                    })
+                    st.dataframe(tabla_df, use_container_width=True, hide_index=True)
+                    st.markdown("<br>", unsafe_allow_html=True)
+                    # =================================
+                    
                     # Graficar la función y las tangentes
                     fig_df = go.Figure()
                     
@@ -1269,6 +1269,17 @@ with tab_integracion:
                     c2.metric(t.get('EXACT_AREA', 'Ref. Alta Resolución'), f"{area_exacta:.6f}")
                     c3.metric(t.get('COL_ERR', 'Error Absoluto'), f"{error_intg:.6f}", delta_color="off")
                     
+                    st.markdown("#### Coordenadas de los Intervalos")
+                    tabla_intg = pd.DataFrame({
+                        "Intervalo (i)": range(len(x_eval)),
+                        "Valor x_i": [f"{val:.5f}" for val in x_eval],
+                        "f(x_i)": [f"{val:.5f}" for val in y_eval]
+                    })
+                    # st.dataframe mostrará una tabla con scroll si hay muchos intervalos
+                    st.dataframe(tabla_intg, use_container_width=True, hide_index=True, height=200)
+                    st.markdown("<br>", unsafe_allow_html=True)
+                    # ==================================
+
                     # 3. Gráfica de la Integración
                     fig_intg = go.Figure()
                     
