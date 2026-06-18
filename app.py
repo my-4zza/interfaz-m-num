@@ -924,7 +924,7 @@ with tab_sistemas:
             n = n_vars
             
             # --- 1. PROCEDIMIENTO ANALÍTICO EXACTO CON SYMPY ---
-            st.markdown(f"#### 🔍 {t.get('EXACT_SOL', 'Solución Analítica Exacta')}")
+            st.markdown(f"#### {t.get('EXACT_SOL', 'Solución Analítica Exacta')}")
             A_sym = sp.Matrix(A_aug[:, :-1])
             B_sym = sp.Matrix(A_aug[:, -1])
             
@@ -948,7 +948,7 @@ with tab_sistemas:
 
             if sistema_valido:
                 # --- 2. PROCEDIMIENTO NUMÉRICO PASO A PASO ---
-                st.markdown(f"#### 🔢 {t.get('SYS_STEPS', 'Procedimiento Numérico Paso a Paso')}")
+                st.markdown(f"#### {t.get('SYS_STEPS', 'Procedimiento Numérico Paso a Paso')}")
                 A_num = A_aug.copy()
                 pasos = [A_num.copy()]
 
@@ -1009,7 +1009,7 @@ with tab_sistemas:
                     with st.expander(titulo_paso):
                         st.dataframe(pd.DataFrame(matriz, columns=edited_sys_df.columns).round(5), use_container_width=True)
 
-                st.markdown(f"#### 🎯 {t.get('NUM_SOL', 'Solución Numérica')}")
+                st.markdown(f"#### {t.get('NUM_SOL', 'Solución Numérica')}")
                 cols_met = st.columns(n)
                 for i in range(n):
                     cols_met[i].metric(label=f"x_{i+1}", value=f"{x_num[i]:.6f}")
