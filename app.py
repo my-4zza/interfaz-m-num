@@ -16,22 +16,25 @@ st.set_page_config(page_title="Itera Studio", layout="wide")
 # INYECCIÓN DE IMAGEN DE FONDO
 # ==========================================
 def agregar_fondo_local(ruta_imagen):
-    with open(ruta_imagen, "rb") as archivo_imagen:
-        imagen_codificada = base64.b64encode(archivo_imagen.read()).decode()
-    
-    st.markdown(
-        f"""
-        <style>
-        .stApp {{
-            background-image: url("data:image/png;base64,{imagen_codificada}");
-            background-size: cover;
-            background-position: center;
-            background-attachment: fixed;
-        }}
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+    try:
+        with open(ruta_imagen, "rb") as archivo_imagen:
+            imagen_codificada = base64.b64encode(archivo_imagen.read()).decode()
+        
+        st.markdown(
+            f"""
+            <style>
+            .stApp {{
+                background-image: url("data:image/png;base64,{imagen_codificada}");
+                background-size: cover;
+                background-position: center;
+                background-attachment: fixed;
+            }}
+            </style>
+            """,
+            unsafe_allow_html=True
+        )
+    except FileNotFoundError:
+        pass # Ignorar si no hay fondo para que no rompa la ejecución
 
 # Llama a la función con el nombre exacto de tu archivo de imagen
 agregar_fondo_local("wallpaper.jpeg")
@@ -76,6 +79,7 @@ LANG = {
     "ESPAÑOL": {
         "TITLE": "ITERA STUDIO",
         "TAB1": "SOLUCIÓN DE ECUACIONES",
+        "TAB6": "SISTEMAS DE ECUACIONES",
         "TAB2": "REGRESIÓN E INTERPOLACIÓN",
         "TAB_INFO": "INFORMACIÓN",
         "TAB_HELP": "AYUDA",
@@ -96,6 +100,7 @@ LANG = {
         "NO_ROOTS": "No se encontraron raíces válidas para graficar.",
         "ERR_SYNTAX": "ERROR en la sintaxis de las funciones o división por cero detectada. Revisa los datos ingresados.",
         "INFO_START_ROOTS": "INGRESA LOS PARÁMETROS A LA IZQUIERDA Y PRESIONA 'CALCULAR RAÍCES'.",
+        "INFO_START_SYS": "DEFINE LA MATRIZ Y PRESIONA 'RESOLVER SISTEMA'.",
         "INFO_START_REG": "INGRESA LOS DATOS A LA IZQUIERDA Y PRESIONA EL BOTÓN DE CÁLCULO.",
         "INFO_START_DERIV": "INGRESA LOS PARÁMETROS A LA IZQUIERDA Y PRESIONA 'CALCULAR DERIVADAS'.",
         "INFO_START_INTG": "INGRESA LOS PARÁMETROS A LA IZQUIERDA Y PRESIONA 'CALCULAR ÁREA'.",
@@ -124,12 +129,24 @@ LANG = {
         "CURVE_F": "Curva f(x) y Puntos Encontrados",
         "AXIS_X": "EJE X",
         "AXIS_Y": "EJE Y",
-        "INFO_TEXT": "Somos estudiantes de la Universidad Veracruzana y desarrolladmos esta herramienta interactiva que te permite explorar los métodos numéricos clásicos aplicados a la ingeniería y ciencias exactas. No solo calcula raíces de ecuaciones, sino que también abarca regresión, interpolación, derivación, integración y ecuaciones diferenciales ordinarias (E.D.O.). El objetivo es que puedas comparar la precisión, velocidad y comportamiento de cada algoritmo mediante visualizaciones claras y tablas iterativas.",
+        "INFO_TEXT": "Somos estudiantes de la Universidad Veracruzana y desarrollamos esta herramienta interactiva que te permite explorar los métodos numéricos clásicos aplicados a la ingeniería y ciencias exactas. No solo calcula raíces de ecuaciones, sino que también abarca regresión, interpolación, derivación, integración y ecuaciones diferenciales ordinarias (E.D.O.). El objetivo es que puedas comparar la precisión, velocidad y comportamiento de cada algoritmo mediante visualizaciones claras y tablas iterativas.",
         "HELP_SYNTAX": "### SINTAXIS DE FUNCIONES\nLa calculadora interpreta texto natural matemático. Puedes usar:\n* **Potencias:** `x^2` o `x**2`\n* **Multiplicación implícita:** `2x` se interpreta automáticamente como `2*x`\n* **Fracciones:** `(x+1)/2`\n* **Funciones trigonométricas:** `sin(x)`, `cos(x)`, `tan(x)`\n* **Exponenciales y logaritmos:** `exp(x)` para e^x, `log(x)` para el logaritmo natural.\n* **Múltiples variables:** Para las E.D.O., puedes usar `x` e y juntas (ej. `x + 2y` o `x*y`).",
         "HELP_PARAMS": "### PARÁMETROS PRINCIPALES\n**Módulo de Raíces:**\n* **xₗ y xᵤ:** Límites que encierran la raíz (Bisección y Falsa Posición).\n* **x₀:** Valor inicial de búsqueda (Newton-Raphson y Punto Fijo).\n* **ε:** Tolerancia. El cálculo se detiene cuando el error es menor a este valor.\n\n**Otros Módulos:**\n* **P₀ y P₁ / Puntos (x,y):** Coordenadas base para trazar los ajustes de regresión o interpolación.\n* **h:** Tamaño de paso utilizado para el cálculo de Derivadas y E.D.O.\n* **a y b:** Límites inferior y superior para delimitar el área de Integración.\n* **n:** Número de intervalos o particiones para los métodos de Integración.",
         "EX_1_TITLE": "Ejemplo 1: Polinomio Algebraico",
         "EX_2_TITLE": "Ejemplo 2: Ecuación Trascendente",
         "EX_3_TITLE": "Ejemplo 3: Convergencia de Punto Fijo",
+        "SYS_TITLE": "RESOLUCIÓN DE SISTEMAS LINEALES",
+        "SYS_METHOD": "Selecciona el método:",
+        "METH_GAUSS": "Eliminación de Gauss",
+        "METH_GAUSS_JORDAN": "Gauss-Jordan",
+        "SYS_N": "Número de incógnitas (n):",
+        "SYS_DATA": "Matriz Aumentada [A | B]",
+        "CALC_SYS_BTN": "RESOLVER SISTEMA",
+        "SYS_RES": "Resultados y Procedimiento",
+        "EXACT_SOL": "Solución Analítica Exacta",
+        "NUM_SOL": "Solución Numérica",
+        "SYS_STEPS": "Procedimiento Numérico Paso a Paso",
+        "ERR_SINGULAR": "ERROR: El sistema es singular (no tiene solución única).",
         "REG_TITLE": "REGRESIÓN LINEAL (MÍNIMOS CUADRADOS)",
         "REG_DATA": "Ingreso de Datos",
         "REG_ADD_DEL": "Haz doble clic para editar. Puedes agregar o eliminar filas en la última celda.",
@@ -203,7 +220,8 @@ LANG = {
     "ENGLISH": {
         "TITLE": "ITERA STUDIO",
         "TAB1": "EQUATION SOLVING",
-        "TAB2": "REGRESSION & INTERPOLATION",
+        "TAB6": "SYSTEMS OF EQUATIONS",
+        "TAB2": "REGRESIÓN E INTERPOLACIÓN",
         "TAB_INFO": "INFO",
         "TAB_HELP": "HELP",
         "TAB_EXAMPLES": "EXAMPLES",
@@ -223,6 +241,7 @@ LANG = {
         "NO_ROOTS": "No valid roots found to plot.",
         "ERR_SYNTAX": "ERROR in function syntax or division by zero detected. Check the input data.",
         "INFO_START_ROOTS": "ENTER PARAMETERS ON THE LEFT AND PRESS 'CALCULATE ROOTS'.",
+        "INFO_START_SYS": "DEFINE THE MATRIX AND PRESS 'SOLVE SYSTEM'.",
         "INFO_START_REG": "ENTER DATA ON THE LEFT AND PRESS THE CALCULATE BUTTON.",
         "INFO_START_DERIV": "ENTER PARAMETERS ON THE LEFT AND PRESS 'CALCULATE DERIVATIVES'.",
         "INFO_START_INTG": "ENTER PARAMETERS ON THE LEFT AND PRESS 'CALCULATE AREA'.",
@@ -257,6 +276,18 @@ LANG = {
         "EX_1_TITLE": "Example 1: Algebraic Polynomial",
         "EX_2_TITLE": "Example 2: Transcendental Equation",
         "EX_3_TITLE": "Example 3: Fixed Point Convergence",
+        "SYS_TITLE": "LINEAR SYSTEMS SOLVER",
+        "SYS_METHOD": "Select method:",
+        "METH_GAUSS": "Gaussian Elimination",
+        "METH_GAUSS_JORDAN": "Gauss-Jordan",
+        "SYS_N": "Number of unknowns (n):",
+        "SYS_DATA": "Augmented Matrix [A | B]",
+        "CALC_SYS_BTN": "SOLVE SYSTEM",
+        "SYS_RES": "Results and Procedure",
+        "EXACT_SOL": "Exact Analytical Solution",
+        "NUM_SOL": "Numerical Solution",
+        "SYS_STEPS": "Step-by-Step Numerical Procedure",
+        "ERR_SINGULAR": "ERROR: The system is singular (no unique solution).",
         "REG_TITLE": "LINEAR REGRESSION (LEAST SQUARES)",
         "REG_DATA": "Data Input",
         "REG_ADD_DEL": "Double click to edit. You can add or delete rows at the bottom.",
@@ -366,6 +397,7 @@ st.markdown("""
         display: flex; justify-content: center; gap: 35px;
         background-color: transparent; border-bottom: 1px solid rgba(128, 128, 128, 0.2);
         padding-bottom: 0px;
+        flex-wrap: wrap;
     }
     .stTabs [data-baseweb="tab"] {
         height: auto !important; padding: 12px 0px !important;
@@ -491,9 +523,10 @@ st.markdown(f"<h1>{t['TITLE']}</h1>", unsafe_allow_html=True)
 if st.session_state.get("expert_mode", False):
     st.caption("⚙️ **MODO EXPERTO ACTIVADO:** Monitor de rendimiento en segundo plano listo.")
 
-# Creación de Pestañas 
-tab_raices, tab_regresion, tab_derivacion, tab_integracion, tab_edo, tab_ayuda = tab_raices, tab_regresion, tab_derivacion, tab_integracion, tab_edo, tab_ayuda = st.tabs([
+# Creación de Pestañas (Se agregó Sistemas de Ecuaciones)
+tab_raices, tab_sistemas, tab_regresion, tab_derivacion, tab_integracion, tab_edo, tab_ayuda = st.tabs([
     t["TAB1"], 
+    t["TAB6"],
     t["TAB2"], 
     t.get("TAB3", "DERIVACIÓN"), 
     t.get("TAB4", "INTEGRACIÓN"), 
@@ -846,6 +879,143 @@ with tab_raices:
                 st.error(t["ERR_SYNTAX"])
         else:
             st.info(t["INFO_START_ROOTS"])
+
+# ==========================================
+# PESTAÑA 1.5: SISTEMAS DE ECUACIONES LINEALES
+# ==========================================
+
+with tab_sistemas:
+    st.markdown(f"### {t.get('SYS_TITLE', 'RESOLUCIÓN DE SISTEMAS LINEALES')}")
+    
+    metodo_sys = st.radio(
+        t.get("SYS_METHOD", "Selecciona el método:"),
+        [t.get("METH_GAUSS", "Eliminación de Gauss"),
+         t.get("METH_GAUSS_JORDAN", "Gauss-Jordan")],
+        horizontal=True
+    )
+    
+    st.markdown("---")
+    
+    col_in_sys, col_out_sys = st.columns([1, 2], gap="large")
+    
+    with col_in_sys:
+        n_vars = st.number_input(t.get("SYS_N", "Número de incógnitas (n):"), min_value=2, max_value=10, value=3, step=1, key="sys_n_input")
+        st.markdown(f"**{t.get('SYS_DATA', 'Matriz Aumentada [A | B]')}**")
+        
+        # Inicializar DataFrame para la matriz si cambia el tamaño
+        if "sys_n" not in st.session_state or st.session_state.sys_n != n_vars:
+            st.session_state.sys_n = n_vars
+            columnas_sys = [f"x{i+1}" for i in range(n_vars)] + ["B"]
+            st.session_state.df_sys = pd.DataFrame(np.zeros((n_vars, n_vars + 1)), columns=columnas_sys)
+            # Ejemplo precargado solucionable para n=3
+            if n_vars == 3:
+                st.session_state.df_sys.iloc[0] = [2.0, 1.0, -1.0, 8.0]
+                st.session_state.df_sys.iloc[1] = [-3.0, -1.0, 2.0, -11.0]
+                st.session_state.df_sys.iloc[2] = [-2.0, 1.0, 2.0, -3.0]
+                
+        edited_sys_df = st.data_editor(st.session_state.df_sys, use_container_width=True, hide_index=True)
+        st.markdown("<br>", unsafe_allow_html=True)
+        ejecutar_sys = st.button(t.get('CALC_SYS_BTN', 'RESOLVER SISTEMA'), use_container_width=True)
+
+    with col_out_sys:
+        st.markdown(f"### {t.get('SYS_RES', 'Resultados y Procedimiento')}")
+        if ejecutar_sys:
+            A_aug = edited_sys_df.values.astype(float)
+            n = n_vars
+            
+            # --- 1. PROCEDIMIENTO ANALÍTICO EXACTO CON SYMPY ---
+            st.markdown(f"#### 🔍 {t.get('EXACT_SOL', 'Solución Analítica Exacta')}")
+            A_sym = sp.Matrix(A_aug[:, :-1])
+            B_sym = sp.Matrix(A_aug[:, -1])
+            
+            try:
+                # Utilizamos LUsolve o inv()*B para forzar a SymPy a dar la solución analítica exacta
+                sol_exact = A_sym.LUsolve(B_sym)
+                
+                # Construir visualización en LaTeX
+                vector_x = r" \\ ".join([f"x_{i+1}" for i in range(n)])
+                vector_sol = r" \\ ".join([sp.latex(sp.nsimplify(val)) for val in sol_exact])
+                latex_exact = r" \begin{pmatrix} " + vector_x + r" \end{pmatrix} = \begin{pmatrix} " + vector_sol + r" \end{pmatrix} "
+                st.latex(latex_exact)
+                sistema_valido = True
+                
+            except sp.exceptions.NonInvertibleMatrixError:
+                st.error(t.get("ERR_SINGULAR", "ERROR: El sistema es singular (no tiene solución única o tiene infinitas soluciones)."))
+                sistema_valido = False
+            except Exception as e:
+                st.error(f"Error analítico: {e}")
+                sistema_valido = False
+
+            if sistema_valido:
+                # --- 2. PROCEDIMIENTO NUMÉRICO PASO A PASO ---
+                st.markdown(f"#### 🔢 {t.get('SYS_STEPS', 'Procedimiento Numérico Paso a Paso')}")
+                A_num = A_aug.copy()
+                pasos = [A_num.copy()]
+
+                if metodo_sys == t.get("METH_GAUSS", "Eliminación de Gauss"):
+                    # Eliminación hacia adelante
+                    for i in range(n):
+                        # Pivoteo Parcial (buscar el mayor elemento en la columna para evitar división por cero)
+                        max_row = i + np.argmax(np.abs(A_num[i:, i]))
+                        if i != max_row:
+                            A_num[[i, max_row]] = A_num[[max_row, i]]
+                            pasos.append(A_num.copy())
+
+                        pivot = A_num[i, i]
+                        if abs(pivot) < 1e-12: continue
+
+                        for j in range(i + 1, n):
+                            factor = A_num[j, i] / pivot
+                            A_num[j, i:] = A_num[j, i:] - factor * A_num[i, i:]
+                        pasos.append(A_num.copy())
+
+                    # Sustitución hacia atrás
+                    x_num = np.zeros(n)
+                    for i in range(n - 1, -1, -1):
+                        suma = np.sum(A_num[i, i+1:n] * x_num[i+1:n])
+                        x_num[i] = (A_num[i, -1] - suma) / A_num[i, i]
+
+                else:
+                    # Método de Gauss-Jordan
+                    for i in range(n):
+                        # Pivoteo Parcial
+                        max_row = i + np.argmax(np.abs(A_num[i:, i]))
+                        if i != max_row:
+                            A_num[[i, max_row]] = A_num[[max_row, i]]
+                            pasos.append(A_num.copy())
+
+                        pivot = A_num[i, i]
+                        if abs(pivot) < 1e-12: continue
+
+                        # Convertir pivote en 1
+                        A_num[i] = A_num[i] / pivot
+                        pasos.append(A_num.copy())
+
+                        # Hacer ceros los demás elementos de la columna
+                        for j in range(n):
+                            if i != j:
+                                factor = A_num[j, i]
+                                A_num[j] = A_num[j] - factor * A_num[i]
+                        pasos.append(A_num.copy())
+
+                    x_num = A_num[:, -1]
+
+                # Renderizar los pasos visualmente usando expanders
+                for idx, matriz in enumerate(pasos):
+                    if idx == 0:
+                        titulo_paso = "Matriz Inicial"
+                    else:
+                        titulo_paso = f"Iteración {idx}"
+                    with st.expander(titulo_paso):
+                        st.dataframe(pd.DataFrame(matriz, columns=edited_sys_df.columns).round(5), use_container_width=True)
+
+                st.markdown(f"#### 🎯 {t.get('NUM_SOL', 'Solución Numérica')}")
+                cols_met = st.columns(n)
+                for i in range(n):
+                    cols_met[i].metric(label=f"x_{i+1}", value=f"{x_num[i]:.6f}")
+
+        else:
+            st.info(t.get("INFO_START_SYS", "DEFINE LA MATRIZ Y PRESIONA 'RESOLVER SISTEMA'."))
 
 # ==========================================
 # PESTAÑA 2: REGRESIÓN E INTERPOLACIÓN
